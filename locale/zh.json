@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "CodeTrail 架构导览",
+    "description": "Rust 静态调用图分析、Git 修改影响审查，以及架构导览工作台面板。"
+  }
+}

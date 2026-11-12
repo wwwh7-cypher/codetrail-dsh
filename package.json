@@ -1,0 +1,59 @@
+{
+  "name": "codetrail-dsh",
+  "version": "0.2.0",
+  "description": "CodeTrail for DeepSeek Harness: Rust static call-graph tools and an architecture workbench panel.",
+  "type": "module",
+  "icon": "./icon.png",
+  "license": "AGPL-3.0-only",
+  "author": "wwwh7",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "code-trail",
+    "call-graph",
+    "static-analysis",
+    "code-review"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wwwh7-cypher/codetrail-dsh.git"
+  },
+  "homepage": "https://github.com/wwwh7-cypher/codetrail-dsh#readme",
+  "bugs": {
+    "url": "https://github.com/wwwh7-cypher/codetrail-dsh/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.png"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib/",
+    "bin/code-trail.exe",
+    "icon.png",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  }
+}

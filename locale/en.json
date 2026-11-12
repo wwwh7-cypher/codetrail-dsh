@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "CodeTrail",
+    "description": "Rust static call-graph analysis, Git change review, and an architecture workbench panel."
+  }
+}
