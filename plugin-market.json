@@ -1,0 +1,86 @@
+{
+  "format": 1,
+  "title": {
+    "en": "CodeTrail for DeepSeek Harness",
+    "zh": "CodeTrail 架构导览"
+  },
+  "description": {
+    "en": "Rust static call-graph tools and an architecture workbench panel for DeepSeek Harness.",
+    "zh": "把 CodeTrail 的 Rust 静态调用图与架构工作台做成 DSH 插件：Agent 工具 + Web 面板。"
+  },
+  "metadata": {
+    "categories": {
+      "code-analysis": {
+        "title": {
+          "en": "Code analysis",
+          "zh": "代码分析"
+        }
+      }
+    },
+    "labels": {
+      "call-graph": {
+        "title": {
+          "en": "Call graph",
+          "zh": "调用图"
+        }
+      },
+      "code-review": {
+        "title": {
+          "en": "Code review",
+          "zh": "代码审查"
+        }
+      },
+      "static-analysis": {
+        "title": {
+          "en": "Static analysis",
+          "zh": "静态分析"
+        }
+      }
+    }
+  },
+  "plugins": [
+    {
+      "name": "codetrail-dsh",
+      "title": {
+        "en": "CodeTrail for DeepSeek Harness",
+        "zh": "CodeTrail 架构导览"
+      },
+      "description": {
+        "en": "Scan a repository with CodeTrail's native Rust analyzer, query the static call graph, review Git changes, and explore the same graph in a Web panel with explicit call-site counts and unresolved-call gaps.",
+        "zh": "用 CodeTrail 的 Rust 分析器扫描仓库、查询静态调用图、审查 Git 修改，并在 Web 面板中显式查看调用点计数与未解析缺口。"
+      },
+      "icon": "icon.png",
+      "author": "wwwh7",
+      "homepage": "https://github.com/wwwh7-cypher/codetrail-dsh#readme",
+      "repository": {
+        "url": "https://github.com/wwwh7-cypher/codetrail-dsh"
+      },
+      "metadata": {
+        "category": "code-analysis",
+        "labels": [
+          "call-graph",
+          "code-review",
+          "static-analysis"
+        ],
+        "keywords": [
+          "code trail",
+          "call graph",
+          "static analysis",
+          "code review",
+          "architecture"
+        ]
+      },
+      "versions": [
+        {
+          "version": "0.2.0",
+          "publishTimestamp": 1794473916,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/wwwh7-cypher/codetrail-dsh",
+            "commit": "0553e1e14421f78fb090538fb3a0e0980a76561a"
+          }
+        }
+      ]
+    }
+  ]
+}
