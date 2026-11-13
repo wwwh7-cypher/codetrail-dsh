@@ -1,7 +1,7 @@
 {
   "name": "codetrail-dsh",
-  "version": "0.2.0",
-  "description": "CodeTrail for DeepSeek Harness: Rust static call-graph tools and an architecture workbench panel.",
+  "version": "0.3.0",
+  "description": "CodeTrail for DeepSeek Harness: Rust static call-graph tools, current-agent annotation memory, and an architecture workbench panel.",
   "type": "module",
   "icon": "./icon.png",
   "license": "AGPL-3.0-only",
@@ -13,7 +13,8 @@
     "code-trail",
     "call-graph",
     "static-analysis",
-    "code-review"
+    "code-review",
+    "ai-memory"
   ],
   "repository": {
     "type": "git",
@@ -40,7 +41,8 @@
     "icon.png",
     "cordis.patch.yml",
     "locale/*.json",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "dsh": {
     "bundle": {

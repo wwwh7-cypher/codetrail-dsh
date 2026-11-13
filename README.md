@@ -2,8 +2,9 @@
 
 把 [CodeTrail](https://github.com/wwwh7-cypher/CodeTrail)（Rust 静态调用图 + 自包含 HTML 工作台）打包成可安装的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件 bundle。一个 bundle 同时提供 Host 工具与 Web 面板：
 
-- **Host 工具**：`code_trail_scan`、`code_trail_query`、`code_trail_review`、`code_trail_memory`。Agent 在对话里直接调用，输出 JSON / 文本证据；`code_trail_query` 的 `modules` 返回模块统计、跨模块调用点、instability 与循环依赖摘要。
-- **Web 面板**：左侧栏出现「CodeTrail 架构导览」图标，中央面板列出最近 40 条扫描 / 审查记录，并用 iframe 加载 Rust 生成的自包含工作台。工作台支持 `×N` 调用点聚合、静态/候选解析虚线、`⚡N` 未解析角标与原因、方向开关与上下游深度、Top-N 扇出聚合、紧凑卡/LOD、关系清单三表、图派生范围筛选、模块指标/全量依赖表/循环高亮、入口分类与距入口跳数、review 模块级变更摘要。
+- **Host 工具**：`code_trail_scan`、`code_trail_query`、`code_trail_review`、`code_trail_memory`，以及给当前 Agent 做 AI 分析用的 `code_trail_prepare_annotations`、`code_trail_annotate`、`code_trail_ai_memory`。Agent 在对话里直接调用，输出 JSON / 文本证据；`code_trail_query` 的 `modules` 返回模块统计、跨模块调用点、instability 与循环依赖摘要。
+- **AI 分析用当前 Agent**：DSH / Skill 场景不要求额外 API Key——Agent 读取 `prepare-annotations` 返回的源码片段，自己写函数职责，`annotate` 校验写入图并自动追加 AI 解析记忆 Markdown。只有 VS Code 扩展使用客户自备 API Key（BYOK）。
+- **Web 面板**：左侧栏出现「CodeTrail 架构导览」图标，中央面板列出最近 40 条扫描 / 审查记录，并用 iframe 加载 Rust 生成的自包含工作台。工作台支持 `×N` 调用点聚合、静态/候选解析虚线、`⚡N` 未解析角标与原因、方向开关与上下游深度、Top-N 扇出聚合、紧凑卡/LOD、关系列表三表、图派生范围筛选、模块指标/全量依赖表/循环高亮、入口分类与距入口跳数、review 模块级变更摘要；单击函数展开、再点收起。
 
 分析全部在本机完成：Rust 分析器只读源码，插件只写 `<DSH_HOME>/codetrail/`；不联网、不调用模型。
 
@@ -24,7 +25,7 @@ https://raw.githubusercontent.com/wwwh7-cypher/codetrail-dsh/main/plugin-market.
 ### 方式 2：npm
 
 ```text
-plugin_manager install_bundle  target = codetrail-dsh@0.2.0
+plugin_manager install_bundle  target = codetrail-dsh@0.3.0
 ```
 
 （npm 包发布后可用；发布步骤见 [PUBLISHING.md](PUBLISHING.md)。）
@@ -57,7 +58,7 @@ plugin_manager remove_bundle  target = codetrail-dsh
 
 ## 使用
 
-对话中直接请求，例如「扫描 `E:\project` 并看架构」「审查这次 Git 修改的影响」；或让 Agent 显式调用：
+对话中直接请求，例如「扫描 `E:\project` 并看架构」「解释这几个函数并记住」「审查这次 Git 修改的影响」；或让 Agent 显式调用：
 
 ```text
 code_trail_scan { repo: "E:\\project" }
@@ -67,6 +68,18 @@ code_trail_review { repo: "E:\\project", base: "HEAD~1" }
 ```
 
 面板里点「扫描目录 / 审查修改」选择仓库，结果会立即出现在列表；「新窗口打开」可在浏览器打开同一份 HTML。
+
+## AI 分析：当前 Agent 智能 + 解析记忆 Markdown
+
+`code_trail_scan` 生成 graph JSON 后，用当前对话模型分析函数，不需要任何额外 Key：
+
+1. `code_trail_query`（`search`/`find`）定位函数 ID；
+2. `code_trail_prepare_annotations { graph, functions: ["<id>", ...] }` 取回 1–12 个函数的源码片段与 `content_hash`；
+3. Agent 自己写 `{snapshot, source:"conversation-model", annotations:[{id, content_hash, title, summary}]}`（标题 ≤60 字、摘要 ≤400 字，不添加或推断调用边）；
+4. `code_trail_annotate { graph, annotations: "<JSON 文本>" }`：CodeTrail 校验快照/哈希/结构后写回图，并自动在 graph 同目录追加 `ai-memory.md`；
+5. 之后用 `code_trail_ai_memory { graph }` 读回历史 AI 解析记忆，跨轮保持一致。
+
+`ai-memory.md` 是**未确认的 AI 叙述**，不是 `code_trail_memory` 读取的用户确认稳定记忆，也不改变调用边；可以随扫描产物一起删除或重建。VS Code 扩展里同样的记录由客户填写的 API Key（BYOK）模型生成，自动写到工作区 `.codetrail/ai-memory.md`。
 
 ## 配置
 
@@ -95,8 +108,9 @@ code_trail_review { repo: "E:\\project", base: "HEAD~1" }
 
 ## 验证摘要
 
-- 0.2.0：在本机 DSH desktop profile 安装 applied；4 个工具实跑通过（整仓 960 函数 / 831 边 / 3992 未解析；review `HEAD~1` 722 变更函数）；面板 `/codetrail/view/<id>` 返回 200 且命中全部新前端标记。
-- 上游回归：CodeTrail `cargo test --locked` 66 passed；`verify-native.mjs` exit 0；`verify-explorer.cjs` 26/26 checks、consoleErrors=[]。
+- 0.3.0：同步 CodeTrail 0.6.1 二进制（SHA-256 `D666FDA5…16B6C2A7`）；本机实跑 `code_trail_scan` → `code_trail_prepare_annotations` → 当前 Agent 写标注 → `code_trail_annotate` → `code_trail_ai_memory`，2 个函数写入图并生成 `ai-memory.md`；查看器新增单击展开/再点收起与矩形防遮挡布局。
+- 0.2.0：本机 DSH desktop profile 安装 applied；4 个工具实跑通过；面板 `/codetrail/view/<id>` 返回 200 且命中全部新前端标记。
+- 上游 CodeTrail 0.6.1 回归：cargo test 66 passed；verify-native exit 0；verify-explorer 27/27、consoleErrors=[]；VSIX `wwwh7.codetrail-app@0.6.1` 本机安装成功。
 - 面板在浏览器中的视觉外观未由自动化验收，需人工打开确认。
 
 ## 许可

@@ -4,7 +4,7 @@
 
 ## 0. 版本与发布前检查
 
-1. 确认 `package.json` 的 `version`（当前 `0.2.0`）与代码一致。
+1. 确认 `package.json` 的 `version`（当前 `0.3.0`）与代码一致。
 2. 确认 `bin/code-trail.exe` 是用目标版本 CodeTrail 构建的（Windows x64；`--version` 应输出 `code-trail x.y.z`）。
 3. 跑一遍：
 
@@ -19,10 +19,10 @@ npm pack --dry-run
 
 ```powershell
 git add -A
-git commit -m "Release codetrail-dsh 0.2.0"
+git commit -m "Release codetrail-dsh 0.3.0"
 git push origin main
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.3.0
+git push origin v0.3.0
 ```
 
 记下这次提交的 40 位 SHA（市场索引的 `source.commit` 要用它）：
@@ -36,7 +36,7 @@ git rev-parse HEAD
 前提：npm 账号（`npm login`），包名 `codetrail-dsh` 未被占用（当前可用；若被占用改用你拥有的 scope，例如 `@wwwh7/codetrail-dsh`，同时改 `package.json`、`cordis.patch.yml` 与 `client.js` 中的 bundle 名）。
 
 ```powershell
-npm pack                      # 生成 codetrail-dsh-0.2.0.tgz，检查内容
+npm pack                      # 生成 codetrail-dsh-0.3.0.tgz，检查内容
 npm publish                   # 公开包；package.json 已声明 publishConfig.access=public
 ```
 
@@ -46,7 +46,7 @@ npm publish                   # 公开包；package.json 已声明 publishConfig
 npm view codetrail-dsh version
 ```
 
-用户安装：`plugin_manager install_bundle target = codetrail-dsh@0.2.0`。
+用户安装：`plugin_manager install_bundle target = codetrail-dsh@0.3.0`。
 
 每次发版注意：先重建并提交 `bin/code-trail.exe` 再 `npm publish`，否则包里的二进制与声明版本不一致。
 
@@ -77,12 +77,12 @@ https://raw.githubusercontent.com/wwwh7-cypher/codetrail-dsh/main/plugin-market.
 
 ## 4. GitHub Releases（离线安装）
 
-在 GitHub 仓库 → Releases → Draft a new release，选择 tag `v0.2.0`，上传：
+在 GitHub 仓库 → Releases → Draft a new release，选择 tag `v0.3.0`，上传：
 
-- `codetrail-dsh-0.2.0.tgz`（`npm pack` 产物）；
+- `codetrail-dsh-0.3.0.tgz`（`npm pack` 产物）；
 - 可选：`SHA256SUMS`。
 
-用户下载、解压后把目录交给 `plugin_manager install_bundle`，或直接 `npm install -g ./codetrail-dsh-0.2.0.tgz` 不适用（DSH 用 pnpm profile 安装，用 `install_bundle` 指向解压目录即可）。
+用户下载、解压后把目录交给 `plugin_manager install_bundle`，或直接 `npm install -g ./codetrail-dsh-0.3.0.tgz` 不适用（DSH 用 pnpm profile 安装，用 `install_bundle` 指向解压目录即可）。
 
 ## 5. 可选：GitHub Pages / 自定义域名
 
