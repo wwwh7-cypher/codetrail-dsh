@@ -72,12 +72,12 @@
       },
       "versions": [
         {
-          "version": "0.2.0",
-          "publishTimestamp": 1794473916,
+          "version": "0.3.0",
+          "publishTimestamp": 1794542667,
           "source": {
             "type": "git",
             "url": "https://github.com/wwwh7-cypher/codetrail-dsh",
-            "commit": "0553e1e14421f78fb090538fb3a0e0980a76561a"
+            "commit": "68923fbd3c659dc73ec5ce26806f35f3a771e007"
           }
         }
       ]
